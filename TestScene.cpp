@@ -16,7 +16,7 @@ void TestScene::Initialize()
 //XV
 void TestScene::Update()
 {
-	Instantiate<Stage>(this);
+	//Instantiate<Stage>(this);
 }
 
 //•`‰æ

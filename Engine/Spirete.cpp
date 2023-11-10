@@ -94,10 +94,10 @@ void Spirete::InitVertexData()//頂点情報の準備
 	// 頂点情報
 	vertices_ =
 	{
-		{XMVectorSet(400 / (WINDOW_WIDTH / 2.0f) - 1.0f,  -300 / (WINDOW_HEIGHT / 2.0f) + 1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },	// 四角形の頂点（左上）
-		{XMVectorSet(800 / (WINDOW_WIDTH / 2.0f) - 1.0f, -300  / (WINDOW_HEIGHT / 2.0f) + 1.0f, 0.0f, 0.0f),XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f) },	// 四角形の頂点（右上）
-		{XMVectorSet(800 / (WINDOW_WIDTH / 2.0f) - 1.0f, -600  / (WINDOW_HEIGHT / 2.0f) + 1.0f, 0.0f, 0.0f),XMVectorSet(1.0f, 1.0f, 0.0f, 0.0f) },	// 四角形の頂点（右下）
-		{XMVectorSet(400 / (WINDOW_WIDTH / 2.0f) - 1.0f, -600  / (WINDOW_HEIGHT / 2.0f) + 1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f) },	// 四角形の頂点（左下）	
+		{XMVectorSet(200 / (WINDOW_WIDTH / 2.0f) - 1.0f,  -100 / (WINDOW_HEIGHT / 2.0f) + 1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f) },	// 四角形の頂点（左上）
+		{XMVectorSet(600 / (WINDOW_WIDTH / 2.0f) - 1.0f, -100 / (WINDOW_HEIGHT / 2.0f) + 1.0f, 0.0f, 0.0f),XMVectorSet(1.0f, 0.0f, 0.0f, 0.0f) },	// 四角形の頂点（右上）
+		{XMVectorSet(600 / (WINDOW_WIDTH / 2.0f) - 1.0f, -500  / (WINDOW_HEIGHT / 2.0f) + 1.0f, 0.0f, 0.0f),XMVectorSet(1.0f, 1.0f, 0.0f, 0.0f) },	// 四角形の頂点（右下）
+		{XMVectorSet(200 / (WINDOW_WIDTH / 2.0f) - 1.0f, -500  / (WINDOW_HEIGHT / 2.0f) + 1.0f, 0.0f, 0.0f),XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f) },	// 四角形の頂点（左下）	
 		//XMVectorSet(0.0f, 2.0f, 0.0f, 0.0f),	// 四角形の頂点
 	};
 	vertexNum = vertices_.size();
@@ -185,7 +185,7 @@ HRESULT Spirete::CreateConstantBuffer()//コンスタントバッファ作成
 HRESULT Spirete::LoadTexture()//テクスチャをロード
 {
 	pTexture_ = new Texture;
-	pTexture_->Load("Assets\\dice.png");
+	pTexture_->Load("Assets\\tekitou.png");
 
 	return S_OK;
 }

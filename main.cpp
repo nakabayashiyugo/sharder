@@ -6,6 +6,7 @@
 #include"Engine/RootJob.h"
 #include"Engine/GameObject.h"
 #include"Engine/Model.h"
+#include "Engine/Spirete.h"
 
 #pragma comment(lib, "winmm.lib")
 //’è”éŒ¾
@@ -82,6 +83,8 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	pRootJob->Initialize();
 	//GameObject
 	
+	Spirete* pSprite = new Spirete();
+	pSprite->Initialize();
 	
 	
 
@@ -140,8 +143,10 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			//•`‰æˆ—
 			Direct3D::BeginDraw();
 			pRootJob->DrawSub();
+
+			XMMATRIX mat = XMMatrixIdentity();
 			
-			
+			pSprite->Draw(mat);
 			
 			
 			
@@ -154,7 +159,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	Model::Release();
 	pRootJob->ReleaseSub();
 
-
+	pSprite->Release();
 	Input::Release();
 	Direct3D::Release();
 	
