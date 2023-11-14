@@ -55,22 +55,40 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 //„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ„Ÿ
 float4 PS(VS_OUT inData) : SV_Target
 {
-	float4 lightSource = float4(1.0f, 1.0f, 1.0f, 1.0f);
-	//return lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;//float4(1,1,1,1)
+	//float4 lightSource = float4(1.0f, 1.0f, 1.0f, 1.0f);
+	////return lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;//float4(1,1,1,1)
+	//float4 diffuse;
+	//float4 ambient;
+
+	//if (isTexture == true) {
+	//	diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
+	//	ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * float4(0.3, 0.3, 0.3, 1);
+	//}
+	//else {
+	//	diffuse = lightSource * diffuseColor * inData.color;
+	//	ambient = lightSource * diffuseColor * float4(0.3, 0.3, 0.3, 1);
+	//}
+	//
+	//
+	//
+	//return diffuse + ambient;
+
+	/*float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
+	float4 ambientSource = float4(0.2, 0.2, 0.2, 1.0);
 	float4 diffuse;
 	float4 ambient;
+	if (isTexture == false)
+	{
+		diffuse = lightSource * ambientSource * inData.color;
+		ambient = lightSource * ambientSource * inData.color;
+	}
+	else
+	{
+		diffuse = lightSource * ambientSource * inData.color;
+		ambient = lightSource * ambientSource * inData.color;
+	}*/
+	float4 output = g_texture.Sample(g_sampler, inData.uv);
 
-	if (isTexture == true) {
-		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
-		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * float4(0.3, 0.3, 0.3, 1);
-	}
-	else {
-		diffuse = lightSource * diffuseColor * inData.color;
-		ambient = lightSource * diffuseColor * float4(0.3, 0.3, 0.3, 1);
-	}
-	
-	
-	
-	return diffuse + ambient;
-	}
+	return output;
+}
 	

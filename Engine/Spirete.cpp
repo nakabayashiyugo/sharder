@@ -61,7 +61,7 @@ HRESULT Spirete::Initialize()
 
 void Spirete::Draw(XMMATRIX& worldMatrix)
 {
-	Direct3D::SetShader(SHADER_2D);
+	Direct3D::SetShader(SHADER_3D);
 
 	PassDataTcCB(worldMatrix);
 
@@ -89,8 +89,6 @@ void Spirete::Release()
 
 void Spirete::InitVertexData()//’¸“_î•ñ‚Ì€”õ
 {
-
-
 	// ’¸“_î•ñ
 	vertices_ =
 	{
