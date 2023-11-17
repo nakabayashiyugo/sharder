@@ -81,7 +81,7 @@ HRESULT Quad::Initialize()
 	}
 
 	pTexture_ = new Texture;
-	pTexture_->Load("Assets\\dice.png");
+	pTexture_->Load("Assets\\tekitou.png");
 
 	return S_OK;
 }

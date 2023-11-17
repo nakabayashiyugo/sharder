@@ -6,7 +6,6 @@
 #include"Engine/RootJob.h"
 #include"Engine/GameObject.h"
 #include"Engine/Model.h"
-#include "Engine/Spirete.h"
 
 #pragma comment(lib, "winmm.lib")
 //定数宣言
@@ -83,9 +82,6 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 	pRootJob->Initialize();
 	//GameObject
 	
-	Spirete* pSprite = new Spirete();
-	pSprite->Initialize();
-	
 	
 
   //メッセージループ（何か起きるのを待つ）
@@ -145,21 +141,14 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInst, LPSTR lpCmdLine, 
 			pRootJob->DrawSub();
 
 			XMMATRIX mat = XMMatrixIdentity();
-			
-			pSprite->Draw(mat);
-			
-			
-			
-			Direct3D::EndDraw();
-			
-			
+				
+			Direct3D::EndDraw();		
 
 		}
 	}
 	Model::Release();
 	pRootJob->ReleaseSub();
 
-	pSprite->Release();
 	Input::Release();
 	Direct3D::Release();
 	
