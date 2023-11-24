@@ -12,6 +12,8 @@ void Stage::Initialize()
 	//モデルデータのロード
 	hModel_ = Model::Load("Assets\\Ground.fbx");
 	assert(hModel_ >= 0);
+
+	transform_.scale_ = XMFLOAT3(10, 1, 10);
 }
 
 //更新
