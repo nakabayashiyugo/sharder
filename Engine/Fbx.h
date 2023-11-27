@@ -28,7 +28,9 @@ class Fbx
 	{
 		XMMATRIX	matWVP;
 		XMMATRIX	matNormal;
-		XMFLOAT4		diffuseColor;		// ディフューズカラー（マテリアルの色）
+		XMFLOAT4	diffuseColor;		// ディフューズカラー（マテリアルの色）
+		XMFLOAT4	light_vector;		//ライトの方向ベクトル
+		XMFLOAT4	view_point;			//視点
 		int		isTextured;		// テクスチャ貼ってあるかどうか
 	};
 
