@@ -1,5 +1,7 @@
 #include "Fbx.h"
 
+const XMFLOAT4 LIGHT_DIRECTION{ 0, 0, -5, 1 };
+
 Fbx::Fbx():pVertexBuffer_(nullptr), pIndexBuffer_(nullptr), pConstantBuffer_(nullptr), polygonCount_(0),pMaterialList_(nullptr), materialCount_(0), vertexCount_(0)
 {
 
@@ -236,7 +238,8 @@ void    Fbx::Draw(Transform& transform)
 		cb.matNormal = XMMatrixTranspose(transform.GetWorldMatrix());
 		cb.diffuseColor = pMaterialList_[i].diffuse;
 		cb.isTextured = pMaterialList_[i].pTexture != nullptr;
-		cb.view_point = XMStoreFloat4(Camera::GetPosition());
+		XMStoreFloat4(&cb.view_point, Camera::GetPosition());
+		cb.light_vector = LIGHT_DIRECTION;
 
 		D3D11_MAPPED_SUBRESOURCE pdata;
 		Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
