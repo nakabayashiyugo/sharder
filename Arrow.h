@@ -6,6 +6,7 @@
 class Arrow : public GameObject
 {
 	int hModel_;
+	Transform t[3];
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（SceneManager）
