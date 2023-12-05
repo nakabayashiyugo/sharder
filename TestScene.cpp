@@ -14,9 +14,9 @@ TestScene::TestScene(GameObject* parent)
 //‰Šú‰»
 void TestScene::Initialize()
 {
-	Instantiate<Stage>(this);
+	//Instantiate<Stage>(this);
 	Instantiate<Ball>(this);
-	Instantiate<Arrow>(this);
+	//Instantiate<Arrow>(this);
 }
 
 //XV

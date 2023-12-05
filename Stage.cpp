@@ -10,10 +10,10 @@ Stage::Stage(GameObject* parent)
 void Stage::Initialize()
 {
 	//モデルデータのロード
-	hModel_ = Model::Load("Assets\\Ground.fbx");
+	hModel_ = Model::Load("Assets\\donatu.fbx");
 	assert(hModel_ >= 0);
 
-	transform_.scale_ = XMFLOAT3(10, 1, 10);
+	//transform_.scale_ = XMFLOAT3(10, 1, 10);
 }
 
 //更新

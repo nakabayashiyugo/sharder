@@ -12,22 +12,22 @@ Ball::Ball(GameObject* parent)
 //èâä˙âª
 void Ball::Initialize()
 {
-	hModel_ = Model::Load("Assets\\Ball.fbx");
+	hModel_ = Model::Load("Assets\\donatu.fbx");
 	assert(hModel_ >= 0);
 }
 
 //çXêV
 void Ball::Update()
 {
-	transform_.rotate_.x += 5;
-	transform_.rotate_.y += 1;
+	//transform_.rotate_.x += 5;
+	//transform_.rotate_.y += 1;
 }
 
 //ï`âÊ
 void Ball::Draw()
 {
-	transform_.position_.x = 2;
-	transform_.position_.y = 1;
+	//transform_.position_.x = 2;
+	//transform_.position_.y = 1;
 	Model::SetTransform(hModel_, transform_);
 	Model::Draw(hModel_);
 }
