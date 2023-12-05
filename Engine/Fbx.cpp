@@ -1,6 +1,6 @@
 #include "Fbx.h"
 
-const XMFLOAT4 LIGHT_DIRECTION{ 0, 0, -5, 1 };
+const XMFLOAT4 LIGHT_DIRECTION{ 0, 5, -5, 1 };
 
 Fbx::Fbx():pVertexBuffer_(nullptr), pIndexBuffer_(nullptr), pConstantBuffer_(nullptr), polygonCount_(0),pMaterialList_(nullptr), materialCount_(0), vertexCount_(0)
 {

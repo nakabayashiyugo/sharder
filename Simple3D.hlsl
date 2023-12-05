@@ -26,6 +26,7 @@ struct VS_OUT
 	float4 pos    : SV_POSITION;	//位置
 	float2 uv	: TEXCOORD;	//UV座標
 	float4 color	: COLOR;	//色（明るさ）
+	float4 eyev		:POSITION;
 	float4 normal	: NORMAL;
 };
 
@@ -41,14 +42,15 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 	//スクリーン座標に変換し、ピクセルシェーダーへ
 	outData.pos = mul(pos, matWVP);
 	outData.uv = uv;
-
-	//法線を回転
+	normal.w = 0;
 	normal = mul(normal, matW);
-
 	outData.normal = normal;
 
-	//light_vector = normalize(light_vector);
-	outData.color = clamp(dot(normal, light_vector), 0, 1);
+	float light = normalize(light_vector);
+	light = normalize(light);
+	outData.color = saturate(dot(normal, light));
+	float posw = mul(pos, matW);
+	outData.eyev = view_point - posw;
 
 	//まとめて出力
 	return outData;
@@ -60,45 +62,24 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 float4 PS(VS_OUT inData) : SV_Target
 {
 	float4 lightSource = float4(1.0f, 1.0f, 1.0f, 1.0f);
-	//return lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;//float4(1,1,1,1)
+	float4 ambientSource = float4(0.5f, 0.5f, 0.5f, 1);
 	float4 diffuse;
 	float4 ambient;
-	float4 specular;
-	const float Ks = 2.0, n = 8.0;
-	float4 view_vector;
-	view_vector = inData.pos - view_point;
+	float4 NL = saturate(dot(inData.normal, normalize(light_vector)));
+	float4 r = normalize(2 * inData.normal * NL - normalize(light_vector));
+	float4 specular = pow(saturate(dot(r, normalize(inData.eyev))), 8);
+	
 
 	if (isTexture == true) {
 		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
-		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * float4(0.3, 0.3, 0.3, 1);
-		float4 r = 2 * inData.normal * dot(normalize(inData.normal), normalize(light_vector)) - light_vector;
-		specular = pow(dot(normalize(r), normalize(view_vector)), n) * Ks * lightSource;
+		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientSource;
 	}
 	else 
 	{
 		diffuse = lightSource * diffuseColor * inData.color;
-		ambient = lightSource * diffuseColor * float4(0.3, 0.3, 0.3, 1);
-		specular = lightSource * diffuseColor * float4(0.3, 0.3, 0.3, 1);
+		ambient = lightSource * diffuseColor * ambientSource;
 	}
 	
-	return diffuse + specular + ambient;
-	
-	//float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
-	//float4 ambientSource = float4(0.2, 0.2, 0.2, 1.0);
-	//float4 diffuse;
-	//float4 ambient;
-	//if (isTexture == false)
-	//{
-	//	diffuse = lightSource * ambientSource * inData.color;
-	//	ambient = lightSource * ambientSource * inData.color;
-	//}
-	//else
-	//{
-	//	diffuse = lightSource * ambientSource * inData.color;
-	//	ambient = lightSource * ambientSource * inData.color;
-	//}
-	//float4 output = g_texture.Sample(g_sampler, inData.uv);
-
-	//return output;
+	return diffuse + ambient + specular;
 }
 	
