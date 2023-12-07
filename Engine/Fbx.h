@@ -21,17 +21,24 @@ class Fbx
 	//マテリアル
 	struct MATERIAL
 	{
-		Texture* pTexture;
+		Texture*	pTexture;
 		XMFLOAT4	diffuse;
+		XMFLOAT4	ambient;
+		XMFLOAT4	specular;
+		float		shininess;
 	};
 	struct CONSTANT_BUFFER
 	{
 		XMMATRIX	matWVP;
 		XMMATRIX	matNormal;
 		XMFLOAT4	diffuseColor;		// ディフューズカラー（マテリアルの色）
+		XMFLOAT4	ambient;
+		XMFLOAT4	specular;
+		float		shininess;
 		XMFLOAT4	light_vector;		//ライトの方向ベクトル
 		XMFLOAT4	view_point;			//視点
-		int		isTextured;		// テクスチャ貼ってあるかどうか
+		int			isTextured;		// テクスチャ貼ってあるかどうか
+		
 	};
 
 	struct VERTEX

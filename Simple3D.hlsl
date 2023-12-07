@@ -12,10 +12,14 @@ cbuffer global
 {
 	float4x4	matWVP;			// ワールド・ビュー・プロジェクションの合成行列
 	float4x4	matW;	//ワールド行列
-	float4		diffuseColor;		// ディフューズカラー（マテリアルの色）
 	float4		light_vector;		//ライトの方向ベクトル
 	float4		view_point;			//視点
 	bool		isTexture;		// テクスチャ貼ってあるかどうか
+
+	float4		diffuseColor;		// ディフューズカラー（マテリアルの色）
+	float4		ambient;
+	float4		specular;
+	float		shininess;
 };
 
 //───────────────────────────────────────
@@ -63,23 +67,23 @@ float4 PS(VS_OUT inData) : SV_Target
 {
 	float4 lightSource = float4(1.0f, 1.0f, 1.0f, 1.0f);
 	float4 ambientSource = float4(0.5f, 0.5f, 0.5f, 1);
-	float4 diffuse;
-	float4 ambient;
+	float4 dif;
+	float4 amb;
 	float4 NL = saturate(dot(inData.normal, normalize(light_vector)));
 	float4 r = normalize(2 * inData.normal * NL - normalize(light_vector));
-	float4 specular = pow(saturate(dot(r, normalize(inData.eyev))), 8);
+	float4 spe = pow(saturate(dot(r, normalize(inData.eyev))), 8);
 	
 
 	if (isTexture == true) {
-		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
-		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientSource;
+		dif = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
+		amb = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientSource;
 	}
 	else 
 	{
-		diffuse = lightSource * diffuseColor * inData.color;
-		ambient = lightSource * diffuseColor * ambientSource;
+		dif = lightSource * diffuseColor * inData.color;
+		amb = lightSource * diffuseColor * ambientSource;
 	}
 	
-	return diffuse + ambient + specular;
+	return dif + amb + spe;
 }
 	
