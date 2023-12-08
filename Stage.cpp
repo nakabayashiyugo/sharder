@@ -14,6 +14,7 @@ void Stage::Initialize()
 	assert(hModel_ >= 0);
 
 	//transform_.scale_ = XMFLOAT3(10, 1, 10);
+	//transform_.rotate_.z = -90;
 }
 
 //XV

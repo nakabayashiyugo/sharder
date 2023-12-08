@@ -1,9 +1,20 @@
 #pragma once
 #include "Engine/GameObject.h"
 
+struct CBUFF_STAGESCENE
+{
+	XMFLOAT4	light_vector;		//ライトの方向ベクトル
+	XMFLOAT4	view_point;			//視点
+
+};
+
 //■■シーンを管理するクラス
 class TestScene : public GameObject
 {
+	ID3D11Buffer* pCBStageScene_;
+
+	void InitConstantBuffer();
+	XMFLOAT4 lightSourcePosition_;
 public:
 	//コンストラクタ
 	//引数：parent  親オブジェクト（SceneManager）

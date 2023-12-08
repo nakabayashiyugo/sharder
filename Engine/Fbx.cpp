@@ -173,10 +173,13 @@ void Fbx::IntConstantBuffer()
 
 void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 {
+	materialCount_ = pNode->GetMaterialCount();
 	pMaterialList_ = new MATERIAL[materialCount_];
 
 	for (int i = 0; i < materialCount_; i++)
 	{
+		pMaterialList_[i].pTexture = nullptr;
+
 		//i番目のマテリアル情報を取得
 		FbxSurfaceMaterial* pMaterial = pNode->GetMaterial(i);
 		FbxSurfacePhong* pPhong = (FbxSurfacePhong*)pMaterial;
@@ -193,7 +196,7 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 		diffuse = pPhong->Diffuse;
 		ambient = pPhong->Ambient;
 
-		//pMaterialList_[i].diffuse = XMFLOAT4((float)diffuse[0], (float)diffuse[1], (float)diffuse[2], 1.0f);
+		pMaterialList_[i].diffuse = XMFLOAT4((float)diffuse[0], (float)diffuse[1], (float)diffuse[2], 1.0f);
 		pMaterialList_[i].ambient = XMFLOAT4((float)ambient[0], (float)ambient[1], (float)ambient[2], 1.0f);
 		pMaterialList_[i].specular = XMFLOAT4(0, 0, 0, 0);
 		pMaterialList_[i].shininess = 0;
@@ -260,9 +263,9 @@ void    Fbx::Draw(Transform& transform)
 		cb.specular = pMaterialList_[i].specular;
 		cb.shininess = pMaterialList_[i].shininess;
 
-		cb.isTextured = pMaterialList_[i].pTexture != nullptr;
-		XMStoreFloat4(&cb.view_point, Camera::GetPosition());
-		cb.light_vector = LIGHT_DIRECTION;
+		//cb.isTextured = pMaterialList_[i].pTexture != nullptr;
+		//XMStoreFloat4(&cb.view_point, Camera::GetPosition());
+		//cb.light_vector = LIGHT_DIRECTION;
 
 		D3D11_MAPPED_SUBRESOURCE pdata;
 		Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める

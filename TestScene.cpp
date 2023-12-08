@@ -5,6 +5,9 @@
 #include "Stage.h"
 #include "Ball.h"
 #include "Arrow.h"
+void TestScene::InitConstantBuffer()
+{
+}
 //コンストラクタ
 TestScene::TestScene(GameObject* parent)
 	: GameObject(parent, "TestScene")
@@ -16,7 +19,7 @@ void TestScene::Initialize()
 {
 	//Instantiate<Stage>(this);
 	Instantiate<Ball>(this);
-	//Instantiate<Arrow>(this);
+	Instantiate<Arrow>(this);
 }
 
 //更新
