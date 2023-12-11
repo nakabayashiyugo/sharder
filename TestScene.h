@@ -1,5 +1,6 @@
 #pragma once
 #include "Engine/GameObject.h"
+#include "Engine/Quad.h"
 
 struct CBUFF_STAGESCENE
 {
