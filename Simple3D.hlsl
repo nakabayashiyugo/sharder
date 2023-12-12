@@ -12,6 +12,7 @@ cbuffer gmodel:register(b0)
 {
 	float4x4	matWVP;			// ワールド・ビュー・プロジェクションの合成行列
 	float4x4	matW;	//ワールド行列
+	float4x4	matNormal;
 	bool		isTexture;		// テクスチャ貼ってあるかどうか
 
 	float4		diffuseColor;		// ディフューズカラー（マテリアルの色）
@@ -22,8 +23,8 @@ cbuffer gmodel:register(b0)
 
 cbuffer gmodel:register(b1)
 {
-	float4		view_point;			//視点
-	float4		light_vector;		//ライトの方向ベクトル
+	float4		lightPosition;
+	float4		eyePosition;
 };
 
 //───────────────────────────────────────
@@ -51,14 +52,15 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 	outData.pos = mul(pos, matWVP);
 	outData.uv = uv;
 	normal.w = 0;
-	normal = mul(normal, matW);
+	normal = mul(normal, matNormal);
 	outData.normal = normal;
 
-	float light = normalize(light_vector);
+	float light = normalize(lightPosition);
 	light = normalize(light);
+
 	outData.color = saturate(dot(normal, light));
 	float posw = mul(pos, matW);
-	outData.eyev = view_point - posw;
+	outData.eyev = eyePosition - posw;
 
 	//まとめて出力
 	return outData;
@@ -69,25 +71,23 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 //───────────────────────────────────────
 float4 PS(VS_OUT inData) : SV_Target
 {
-	float4 lightSource = float4(1.0f, 1.0f, 1.0f, 1.0f);
-	float4 ambientSource = float4(0.5f, 0.5f, 0.5f, 1);
-	float4 dif;
-	float4 amb;
-	float4 NL = saturate(dot(inData.normal, normalize(light_vector)));
-	float4 r = normalize(2 * inData.normal * NL - normalize(light_vector));
-	float4 spe = pow(saturate(dot(r, normalize(inData.eyev))), 8);
-	
-
-	if (isTexture == true) {
-		dif = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
-		amb = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientSource;
-	}
-	else 
+	float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
+	float4 ambentSource = float4(0.2, 0.2, 0.2, 1.0);
+	float4 diffuse;
+	float4 ambient;
+	float4 NL = (dot(inData.normal, normalize(lightPosition)));
+	float4 reflect = normalize(2 * NL * inData.normal - normalize(lightPosition));
+	float4 specular = pow(saturate(dot(reflect, normalize(inData.eyev))),8);
+	if (isTexture == true)
 	{
-		dif = lightSource * diffuseColor * inData.color;
-		amb = lightSource * diffuseColor * ambientSource;
+		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
+		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambentSource;
 	}
-	
-	return dif + amb + spe;
+	else
+	{
+		diffuse = lightSource * diffuseColor * inData.color;
+		ambient = lightSource * diffuseColor * ambentSource;
+	}
+	return diffuse + ambient + specular;
 }
 	

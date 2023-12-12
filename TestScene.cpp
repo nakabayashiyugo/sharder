@@ -8,7 +8,7 @@
 #include "Arrow.h"
 
 namespace {
-	const XMFLOAT4 DEF_LIGHT_POSITION{ 1, 2, 1, 0 };
+	const XMFLOAT4 DEF_LIGHT_POSITION{ 0, 1, -1, 0 };
 }
 
 void TestScene::InitConstantBuffer()
@@ -29,6 +29,7 @@ void TestScene::InitConstantBuffer()
 	}
 
 }
+
 //コンストラクタ
 TestScene::TestScene(GameObject* parent)
 	: GameObject(parent, "TestScene"), lightSourcePosition_(DEF_LIGHT_POSITION)
@@ -39,7 +40,7 @@ TestScene::TestScene(GameObject* parent)
 void TestScene::Initialize()
 {
 	//Instantiate<Stage>(this);
-	Instantiate<Ball>(this);
+	//Instantiate<Ball>(this);
 	Instantiate<Arrow>(this);
 
 	InitConstantBuffer();
@@ -49,8 +50,8 @@ void TestScene::Initialize()
 void TestScene::Update()
 {
 	CBUFF_STAGESCENE cb;
-	cb.light_vector = lightSourcePosition_;
-	XMStoreFloat4(&cb.view_point, Camera::GetPosition());
+	cb.lightPosition = lightSourcePosition_;
+	XMStoreFloat4(&cb.eyePosition, Camera::GetPosition());
 
 	Direct3D::pContext_->UpdateSubresource(pCBStageScene_, 0, NULL, &cb, 0, 0);
 

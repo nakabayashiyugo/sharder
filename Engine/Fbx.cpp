@@ -173,43 +173,21 @@ void Fbx::IntConstantBuffer()
 
 void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 {
-	materialCount_ = pNode->GetMaterialCount();
 	pMaterialList_ = new MATERIAL[materialCount_];
 
 	for (int i = 0; i < materialCount_; i++)
 	{
-		pMaterialList_[i].pTexture = nullptr;
-
 		//i番目のマテリアル情報を取得
 		FbxSurfaceMaterial* pMaterial = pNode->GetMaterial(i);
-		FbxSurfacePhong* pPhong = (FbxSurfacePhong*)pMaterial;
 
 		//テクスチャ情報
 		FbxProperty  lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sDiffuse);
+
 		//テクスチャの数数
 		int fileTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
 
-		FbxDouble3  diffuse = FbxDouble3(0, 0, 0);
-		FbxDouble3	ambient = FbxDouble3(0, 0, 0);
-		FbxDouble3	specular = FbxDouble3(0, 0, 0);
-
-		diffuse = pPhong->Diffuse;
-		ambient = pPhong->Ambient;
-
-		pMaterialList_[i].diffuse = XMFLOAT4((float)diffuse[0], (float)diffuse[1], (float)diffuse[2], 1.0f);
-		pMaterialList_[i].ambient = XMFLOAT4((float)ambient[0], (float)ambient[1], (float)ambient[2], 1.0f);
-		pMaterialList_[i].specular = XMFLOAT4(0, 0, 0, 0);
-		pMaterialList_[i].shininess = 0;
-
-		if (pMaterial->GetClassId().Is(FbxSurfacePhong::ClassId))
-		{
-			specular = pPhong->Specular;
-			pMaterialList_[i].specular = XMFLOAT4((float)specular[0], (float)specular[1], (float)specular[2], 1.0f);
-			pMaterialList_[i].shininess = pPhong->Shininess;
-		}
-
 		//テクスチャあり
-		if (fileTextureCount == true)
+		if (fileTextureCount)
 		{
 			FbxFileTexture* textureInfo = lProperty.GetSrcObject<FbxFileTexture>(0);
 			const char* textureFilePath = textureInfo->GetRelativeFileName();
@@ -223,13 +201,12 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 			//ファイルからテクスチャ作成
 			pMaterialList_[i].pTexture = new Texture;
 			HRESULT hr = pMaterialList_[i].pTexture->Load(name);
+			assert(hr == S_OK);
 		}
-
 		//テクスチャ無し
 		else
 		{
 			pMaterialList_[i].pTexture = nullptr;
-
 			//マテリアルの色
 			FbxSurfaceLambert* pMaterial = (FbxSurfaceLambert*)pNode->GetMaterial(i);
 			FbxDouble3  diffuse = pMaterial->Diffuse;
@@ -257,19 +234,17 @@ void    Fbx::Draw(Transform& transform)
 		CONSTANT_BUFFER cb;
 
 		cb.matWVP = XMMatrixTranspose(transform.GetWorldMatrix() * Camera::GetViewMatrix() * Camera::GetProjectionMatrix());
-		cb.matNormal = XMMatrixTranspose(transform.GetWorldMatrix());
+		cb.matW = XMMatrixTranspose(transform.GetWorldMatrix());
+		cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
 		cb.diffuseColor = pMaterialList_[i].diffuse;
-		cb.ambient = pMaterialList_[i].ambient;
-		cb.specular = pMaterialList_[i].specular;
-		cb.shininess = pMaterialList_[i].shininess;
 
-		//cb.isTextured = pMaterialList_[i].pTexture != nullptr;
+		cb.isTextured = pMaterialList_[i].pTexture != nullptr;
 		//XMStoreFloat4(&cb.view_point, Camera::GetPosition());
 		//cb.light_vector = LIGHT_DIRECTION;
 
-		//D3D11_MAPPED_SUBRESOURCE pdata;
-		//Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
-		//memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// データを値を送る
+		D3D11_MAPPED_SUBRESOURCE pdata;
+		Direct3D::pContext_->Map(pConstantBuffer_, 0, D3D11_MAP_WRITE_DISCARD, 0, &pdata);	// GPUからのデータアクセスを止める
+		memcpy_s(pdata.pData, pdata.RowPitch, (void*)(&cb), sizeof(cb));	// データを値を送る
 
 		//
 		//Direct3D::pContext_->Unmap(pConstantBuffer_, 0);	//再開

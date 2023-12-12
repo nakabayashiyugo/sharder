@@ -4,8 +4,8 @@
 
 struct CBUFF_STAGESCENE
 {
-	XMFLOAT4	light_vector;		//ライトの方向ベクトル
-	XMFLOAT4	view_point;			//視点
+	XMFLOAT4	lightPosition;		//ライトの方向ベクトル
+	XMFLOAT4	eyePosition;			//視点
 
 };
 
