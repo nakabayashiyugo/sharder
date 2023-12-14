@@ -10,12 +10,11 @@ SamplerState	g_sampler : register(s0);	//サンプラー
 //───────────────────────────────────────
 cbuffer gmodel:register(b0)
 {
-	float4x4	matWVP;			// ワールド・ビュー・プロジェクションの合成行列
-	float4x4	matW;	//ワールド行列
+	float4x4	matWVP;				// ワールド・ビュー・プロジェクションの合成行列
+	float4x4	matW;				//ワールド行列
 	float4x4	matNormal;
-	bool		isTexture;		// テクスチャ貼ってあるかどうか
-
 	float4		diffuseColor;		// ディフューズカラー（マテリアルの色）
+	bool		isTexture;			// テクスチャ貼ってあるかどうか
 	float4		ambient;
 	float4		specular;
 	float		shininess;
@@ -88,6 +87,8 @@ float4 PS(VS_OUT inData) : SV_Target
 		diffuse = lightSource * diffuseColor * inData.color;
 		ambient = lightSource * diffuseColor * ambentSource;
 	}
-	return diffuse + ambient + specular;
+	diffuse = lightSource * diffuseColor * inData.color;
+	ambient = lightSource * diffuseColor * ambentSource;
+	return diffuseColor + ambient + specular;
 }
 	
