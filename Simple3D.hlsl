@@ -55,7 +55,6 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 	outData.normal = normal;
 
 	float light = normalize(lightPosition);
-	light = normalize(light);
 
 	outData.color = saturate(dot(normal, light));
 	float posw = mul(pos, matW);
@@ -87,8 +86,6 @@ float4 PS(VS_OUT inData) : SV_Target
 		diffuse = lightSource * diffuseColor * inData.color;
 		ambient = lightSource * diffuseColor * ambentSource;
 	}
-	diffuse = lightSource * diffuseColor * inData.color;
-	ambient = lightSource * diffuseColor * ambentSource;
-	return diffuseColor + ambient + specular;
+	return diffuse + ambient + specular;
 }
 	
