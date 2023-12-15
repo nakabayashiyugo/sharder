@@ -5,7 +5,7 @@
 struct CBUFF_STAGESCENE
 {
 	XMFLOAT4	lightPosition;		//ライトの方向ベクトル
-	XMFLOAT4	eyePosition;			//視点
+	XMFLOAT4	eyePosition;		//視点
 
 };
 
@@ -32,4 +32,7 @@ public:
 
 	//開放
 	void Release() override;
+
+	XMFLOAT4 GetLightPos() { return lightSourcePosition_; }
+	void SetLightPos(XMFLOAT4 _lightPos) { lightSourcePosition_ = _lightPos; }
 };

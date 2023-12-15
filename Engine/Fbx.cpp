@@ -179,12 +179,30 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 	{
 		//i番目のマテリアル情報を取得
 		FbxSurfaceMaterial* pMaterial = pNode->GetMaterial(i);
+		FbxSurfacePhong* pPhong = (FbxSurfacePhong*)pMaterial;
 
 		//テクスチャ情報
 		FbxProperty  lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sDiffuse);
 
 		//テクスチャの数数
 		int fileTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
+
+		FbxDouble3 diffuse = pPhong->Diffuse;
+		FbxDouble3 ambient = pPhong->Ambient;
+		FbxDouble3 specular = FbxDouble3(0, 0, 0);
+
+
+		pMaterialList_[i].diffuse = XMFLOAT4((float)diffuse[0], (float)diffuse[1], (float)diffuse[2], 1.0f);
+		pMaterialList_[i].ambient = XMFLOAT4((float)ambient[0], (float)ambient[1], (float)ambient[2], 1.0f);
+		pMaterialList_[i].specular = XMFLOAT4(0, 0, 0, 0);
+		pMaterialList_[i].shininess = 0;
+
+		if (pMaterial->GetClassId().Is(FbxSurfacePhong::ClassId))
+		{
+			specular = pPhong->Specular;
+			pMaterialList_[i].specular = XMFLOAT4((float)specular[0], (float)specular[1], (float)specular[2], 1.0f);
+			pMaterialList_[i].shininess = pPhong->Shininess;
+		}
 
 		//テクスチャあり
 		if (fileTextureCount)
@@ -237,6 +255,9 @@ void    Fbx::Draw(Transform& transform)
 		cb.matW = XMMatrixTranspose(transform.GetWorldMatrix());
 		cb.matNormal = XMMatrixTranspose(transform.GetNormalMatrix());
 		cb.diffuseColor = pMaterialList_[i].diffuse;
+		cb.ambientColor = pMaterialList_[i].ambient;
+		cb.specularColor = pMaterialList_[i].specular;
+		cb.shininess = pMaterialList_[i].shininess;
 
 		cb.isTextured = pMaterialList_[i].pTexture != nullptr;
 		//XMStoreFloat4(&cb.view_point, Camera::GetPosition());

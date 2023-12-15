@@ -14,10 +14,10 @@ cbuffer gmodel:register(b0)
 	float4x4	matW;				//ワールド行列
 	float4x4	matNormal;
 	float4		diffuseColor;		// ディフューズカラー（マテリアルの色）
-	bool		isTexture;			// テクスチャ貼ってあるかどうか
-	float4		ambient;
-	float4		specular;
+	float4		ambientColor;
+	float4		specularColor;
 	float		shininess;
+	bool		isTexture;			// テクスチャ貼ってあるかどうか
 };
 
 cbuffer gmodel:register(b1)
@@ -33,9 +33,9 @@ struct VS_OUT
 {
 	float4 pos    : SV_POSITION;	//位置
 	float2 uv	: TEXCOORD;	//UV座標
+	float4 normal	: NORMAL;
 	float4 color	: COLOR;	//色（明るさ）
 	float4 eyev		:POSITION;
-	float4 normal	: NORMAL;
 };
 
 //───────────────────────────────────────
@@ -54,10 +54,10 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 	normal = mul(normal, matNormal);
 	outData.normal = normal;
 
-	float light = normalize(lightPosition);
+	float4 light = normalize(lightPosition);
 
 	outData.color = saturate(dot(normal, light));
-	float posw = mul(pos, matW);
+	float4 posw = mul(pos, matW);
 	outData.eyev = eyePosition - posw;
 
 	//まとめて出力
@@ -70,21 +70,25 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 float4 PS(VS_OUT inData) : SV_Target
 {
 	float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
-	float4 ambentSource = float4(0.2, 0.2, 0.2, 1.0);
 	float4 diffuse;
 	float4 ambient;
 	float4 NL = (dot(inData.normal, normalize(lightPosition)));
 	float4 reflect = normalize(2 * NL * inData.normal - normalize(lightPosition));
-	float4 specular = pow(saturate(dot(reflect, normalize(inData.eyev))),8);
+	
 	if (isTexture == true)
 	{
 		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
-		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambentSource;
+		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientColor;
 	}
 	else
 	{
 		diffuse = lightSource * diffuseColor * inData.color;
-		ambient = lightSource * diffuseColor * ambentSource;
+		ambient = lightSource * diffuseColor * ambientColor;
+	}
+	float4 specular = float4(0, 0, 0, 0);
+	if (specularColor.a != 0)
+	{
+		specular = pow(saturate(dot(reflect, normalize(inData.eyev))), shininess);
 	}
 	return diffuse + ambient + specular;
 }
