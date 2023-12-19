@@ -56,6 +56,7 @@ class Fbx
 	ID3D11Buffer* pConstantBuffer_;
 	MATERIAL* pMaterialList_;
 	vector<int>index_Count_;
+	Texture* pToonTex_;
 
 public:
 
