@@ -50,6 +50,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 
 	//ローカル座標に、ワールド・ビュー・プロジェクション行列をかけて
 	//スクリーン座標に変換し、ピクセルシェーダーへ
+	pos += normal * 0.05f;
 	outData.pos = mul(pos, matWVP);
 	outData.uv = uv;
 	normal.w = 0;
@@ -71,23 +72,34 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD, float4 normal : NORMAL)
 //───────────────────────────────────────
 float4 PS(VS_OUT inData) : SV_Target
 {
-	float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
-	float4 ambentSource = float4(0.2, 0.2, 0.2, 1);
-
+	float4 lightSource = float4(0.0, 0.0, 0.0, 0.0);
 	float4 diffuse;
 	float4 ambient;
+	float4 NL = (dot(inData.normal, normalize(lightPosition)));
+	float4 reflect = normalize(2 * NL * inData.normal - normalize(lightPosition));
 
-	if (isTexture)
+	float2 uv;
+
+	uv.x = abs(dot(inData.normal, normalize(inData.eyev)));
+	uv.y = abs(dot(inData.normal, normalize(inData.eyev)));
+
+	float4 t1 = g_toon_texture.Sample(g_sampler, uv);
+
+	if (isTexture == true)
 	{
-		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
-		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambentSource;
+		diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * t1;
+		ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientColor;
 	}
 	else
 	{
-		diffuse = lightSource * diffuseColor * inData.color;
-		ambient = lightSource * diffuseColor * ambentSource;
+		diffuse = lightSource * diffuseColor * t1;
+		ambient = lightSource * diffuseColor * ambientColor;
+	}
+	float4 specular = float4(0, 0, 0, 0);
+	if (specularColor.a != 0)
+	{
+		specular = pow(saturate(dot(reflect, normalize(inData.eyev))), shininess);
 	}
 
-	return diffuse + ambient;
+	return lightSource;
 }
-	

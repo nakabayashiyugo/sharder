@@ -67,5 +67,6 @@ public:
 	void    IntConstantBuffer();	//コンスタントバッファ準備
 	void    InitMaterial(fbxsdk::FbxNode* pNode);
 	void    Draw(Transform& transform);
+	void	DrawOutLine(Transform& transform);
 	void    Release();
 };
