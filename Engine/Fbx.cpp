@@ -239,7 +239,7 @@ void   Fbx::Draw(Transform& transform)
 {
 	DrawOutLine(transform);
 
-	Direct3D::SetShader(SHADER_TOON);
+	Direct3D::SetShader(SHADER_NORMALMAP);
 	transform.Calclation();//トランスフォームを計算
 
 
