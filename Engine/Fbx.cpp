@@ -95,7 +95,12 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 	{
 		int sIndex = mesh->GetPolygonVertexIndex(i);
 		FbxGeometryElementTangent* t = mesh->GetElementTangent(0);
-		FbxVector4 tangent = t->GetDirectArray().GetAt(sIndex).mData;
+		FbxVector4 tangent{ 0, 0, 0, 0 };
+		if (t)
+		{
+			FbxVector4 tangent = t->GetDirectArray().GetAt(sIndex).mData;
+		}
+		
 		for (int j = 0; j < 3; j++)
 		{
 			int index = mesh->GetPolygonVertices()[sIndex + j];
@@ -249,7 +254,7 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 
 		//ノーマルマップ用
 		//テクスチャ情報
-		lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sDiffuse);
+		lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sBump);
 
 		//テクスチャの数数
 		fileTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
@@ -275,9 +280,6 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 		{
 			pMaterialList_[i].pNormalTexture = nullptr;
 			//マテリアルの色
-			FbxSurfaceLambert* pMaterial = (FbxSurfaceLambert*)pNode->GetMaterial(i);
-			FbxDouble3  diffuse = pMaterial->Diffuse;
-			pMaterialList_[i].diffuse = XMFLOAT4((float)diffuse[0], (float)diffuse[1], (float)diffuse[2], 1.0f);
 		}
 	}
 }
