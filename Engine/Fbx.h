@@ -38,6 +38,7 @@ class Fbx
 		XMFLOAT4	specularColor;
 		float		shininess;
 		int			isTextured;		// テクスチャ貼ってあるかどうか
+		int			hasNormalMap;
 		
 	};
 
