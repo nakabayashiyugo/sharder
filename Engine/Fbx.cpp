@@ -108,6 +108,24 @@ void Fbx::InitVertex(fbxsdk::FbxMesh* mesh)
 				= { (float)tangent[0], (float)tangent[1], (float)tangent[2], (float)tangent[3] };
 		}
 	}
+	FbxGeometryElementTangent* t = mesh->GetElementTangent(0);
+	//タンジェント取得
+	for (int i = 0; i < polygonCount_; i++)
+	{
+		int startIndex = mesh->GetPolygonVertexIndex(i);//これが0なんだなぁ
+		FbxVector4 tangent{ 0,0,0,0 };
+		if (t)
+		{
+			tangent = t->GetDirectArray().GetAt(startIndex).mData;
+		}
+
+		for (int j = 0; j < 3; j++)
+		{
+			int index = mesh->GetPolygonVertices()[startIndex + j];
+			vertices[index].tangent
+				= XMVectorSet((float)tangent[0], (float)tangent[1], (float)tangent[2], 0.0f);
+		}
+	}
 
 	// 頂点データ用バッファの設定
 	D3D11_BUFFER_DESC bd_vertex;
@@ -199,7 +217,7 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 	for (int i = 0; i < materialCount_; i++)
 	{
 		//i番目のマテリアル情報を取得
-		FbxSurfaceMaterial* pMaterial = pNode->GetMaterial(i);
+		FbxSurfaceMaterial* pMaterial = (FbxSurfacePhong*)pNode->GetMaterial(i);
 		FbxSurfacePhong* pPhong = (FbxSurfacePhong*)pMaterial;
 		
 
@@ -220,7 +238,6 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 			pMaterialList_[i].shininess = (float)pPhong->Shininess;
 		}
 
-		{
 			//テクスチャ情報
 			FbxProperty  lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sDiffuse);
 			//テクスチャの数数
@@ -253,15 +270,12 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 				pMaterialList_[i].diffuse = XMFLOAT4((float)diffuse[0], (float)diffuse[1], (float)diffuse[2], 1.0f);
 			}
 
-		}
-
 		
 		//ノーマルマップ用
-		{
 			//テクスチャ情報
-			FbxProperty lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sBump);
+			lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sBump);
 			//テクスチャの数数
-			int fileTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
+			fileTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
 			
 			//テクスチャあり
 			if (fileTextureCount)
@@ -285,7 +299,6 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 			{
 				pMaterialList_[i].pNormalTexture = nullptr;
 				//マテリアルの色
-			}
 		}
 	}
 }
