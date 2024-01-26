@@ -58,22 +58,20 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD,
 	outData.pos = mul(pos, matWVP);
 	outData.uv = (float2)uv;
 
-	float3 binormal = cross(normal, tangent);
+	float3 tmp = cross(tangent, normal);
+	float4 binormal = { tmp, 0 };
+	binormal = mul(binormal, matNormal);
+	binormal = normalize(binormal);
 
 	normal.w = 0;
-	normal = mul(normal, matNormal);
-	normal = normalize(normal);				//法線ベクトルをローカル座標に変換したやつ
-	outData.normal = normal;
+	outData.normal = normalize(mul(normal, matNormal));//法線ベクトルをローカル座標に変換したやつ
 
-	tangent.w = 0;
 	tangent = mul(tangent, matNormal);
+	tangent.w = 0;
 	tangent = normalize(tangent);			//接線ベクトルをローカル座標に変換したやつ
 
-	binormal = mul(binormal, matNormal);
-	binormal = normalize(binormal);			//従法線ベクトルをローカル座標に変換したやつ
-
 	float4 posw = mul(pos, matW);
-	outData.eyev = normalize(eyePosition - posw);		//ワールド座標の視線ベクトル
+	outData.eyev = normalize(posw - eyePosition);;		//ワールド座標の視線ベクトル
 
 	outData.Neyev.x = dot(outData.eyev, tangent);	//接空間の視線ベクトル
 	outData.Neyev.y = dot(outData.eyev, binormal);
@@ -92,7 +90,7 @@ VS_OUT VS(float4 pos : POSITION, float4 uv : TEXCOORD,
 	outData.light.z = dot(light, normal);
 	outData.light.w = 0;
 
-	//outData.light = float4(binormal.x, binormal.y, binormal.z, 0);
+	//outData.light = float4(tangent.x, tangent.y, tangent.z, 0);
 
 	//まとめて出力
 	return outData;
@@ -106,32 +104,33 @@ float4 PS(VS_OUT inData) : SV_Target
 	//return inData.light;
 	float4 lightSource = float4(1.0, 1.0, 1.0, 1.0);
 	float4 diffuse;
+	float4 ambientcolor = float4 (0.2, 0.2, 0.2, 0.2);
 	float4 ambient;
 
 	if (hasNormalMap)
 	{
 		float4 tmpNormal = normalTex.Sample(g_sampler, inData.uv) * 2.0f - 1.0f;
 		tmpNormal = normalize(tmpNormal);
-		//tmpNormal.w = 0;
+		tmpNormal.w = 0;
 
-		float4 NL = clamp(dot(tmpNormal, inData.light), 0, 1);
+		float4 NL = clamp(dot(normalize(inData.light), tmpNormal), 0, 1);
 		float4 S = dot(tmpNormal, normalize(inData.light));
 		float4 reflection = reflect(-inData.light, tmpNormal);
 		float4 specular = pow(saturate(dot(reflection, inData.Neyev)), 2) * specularColor;
 
 		if (isTexture != 0)
 		{
-			diffuse = g_texture.Sample(g_sampler, inData.uv)* S;
-			ambient = g_texture.Sample(g_sampler, inData.uv) * ambientColor;
+			diffuse = g_texture.Sample(g_sampler, inData.uv)* NL;
+			ambient = g_texture.Sample(g_sampler, inData.uv) * ambientcolor;
 		}
 		else
 		{
-			diffuse = lightSource * diffuseColor * S;
-			ambient = lightSource * diffuseColor * ambientColor;
+			diffuse = lightSource * diffuseColor * NL;
+			ambient = lightSource * diffuseColor * ambientcolor;
 		}
 		//diffuse = diffuseColor * NL;
 
-		return diffuse + ambient + specular;
+		return NL;
 	}
 	else
 	{
@@ -140,13 +139,13 @@ float4 PS(VS_OUT inData) : SV_Target
 		if (isTexture == 0)
 		{
 			diffuse = lightSource * diffuseColor * inData.color;
-			ambient = lightSource * diffuseColor * ambientColor;
+			ambient = lightSource * diffuseColor * ambientcolor;
 		}
 		else
 		{
 			diffuse = lightSource * g_texture.Sample(g_sampler, inData.uv) * inData.color;
-			ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientColor;
+			ambient = lightSource * g_texture.Sample(g_sampler, inData.uv) * ambientcolor;
 		}
-		return diffuse + ambient + specular;
+		return diffuse;
 	}
 }

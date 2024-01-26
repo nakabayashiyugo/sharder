@@ -219,7 +219,7 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 		//i番目のマテリアル情報を取得
 		FbxSurfaceMaterial* pMaterial = (FbxSurfacePhong*)pNode->GetMaterial(i);
 		FbxSurfacePhong* pPhong = (FbxSurfacePhong*)pMaterial;
-		
+
 
 		FbxDouble3 diffuse = pPhong->Diffuse;
 		FbxDouble3 ambient = pPhong->Ambient;
@@ -238,67 +238,67 @@ void Fbx::InitMaterial(fbxsdk::FbxNode* pNode)
 			pMaterialList_[i].shininess = (float)pPhong->Shininess;
 		}
 
-			//テクスチャ情報
-			FbxProperty  lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sDiffuse);
-			//テクスチャの数数
-			int fileTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
+		//テクスチャ情報
+		FbxProperty  lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sDiffuse);
+		//テクスチャの数数
+		int fileTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
 
-			//テクスチャあり
-			if (fileTextureCount)
-			{
-				FbxFileTexture* textureInfo = lProperty.GetSrcObject<FbxFileTexture>(0);
-				const char* textureFilePath = textureInfo->GetRelativeFileName();
+		//テクスチャあり
+		if (fileTextureCount)
+		{
+			FbxFileTexture* textureInfo = lProperty.GetSrcObject<FbxFileTexture>(0);
+			const char* textureFilePath = textureInfo->GetRelativeFileName();
 
-				//ファイル名+拡張だけにする
-				char name[_MAX_FNAME];	//ファイル名
-				char ext[_MAX_EXT];	//拡張子
-				_splitpath_s(textureFilePath, nullptr, 0, nullptr, 0, name, _MAX_FNAME, ext, _MAX_EXT);
-				wsprintf(name, "%s%s", name, ext);
+			//ファイル名+拡張だけにする
+			char name[_MAX_FNAME];	//ファイル名
+			char ext[_MAX_EXT];	//拡張子
+			_splitpath_s(textureFilePath, nullptr, 0, nullptr, 0, name, _MAX_FNAME, ext, _MAX_EXT);
+			wsprintf(name, "%s%s", name, ext);
 
-				//ファイルからテクスチャ作成
-				pMaterialList_[i].pTexture = new Texture;
-				HRESULT hr = pMaterialList_[i].pTexture->Load(name);
-				assert(hr == S_OK);
-			}
-			//テクスチャ無し
-			else
-			{
-				pMaterialList_[i].pTexture = nullptr;
-				//マテリアルの色
-				FbxSurfaceLambert* pMaterial = (FbxSurfaceLambert*)pNode->GetMaterial(i);
-				FbxDouble3  diffuse = pMaterial->Diffuse;
-				pMaterialList_[i].diffuse = XMFLOAT4((float)diffuse[0], (float)diffuse[1], (float)diffuse[2], 1.0f);
-			}
+			//ファイルからテクスチャ作成
+			pMaterialList_[i].pTexture = new Texture;
+			HRESULT hr = pMaterialList_[i].pTexture->Load(name);
+			assert(hr == S_OK);
+		}
+		//テクスチャ無し
+		else
+		{
+			pMaterialList_[i].pTexture = nullptr;
+			//マテリアルの色
+			FbxSurfaceLambert* pMaterial = (FbxSurfaceLambert*)pNode->GetMaterial(i);
+			FbxDouble3  diffuse = pMaterial->Diffuse;
+			pMaterialList_[i].diffuse = XMFLOAT4((float)diffuse[0], (float)diffuse[1], (float)diffuse[2], 1.0f);
+		}
 
-		
+
 		//ノーマルマップ用
-			//テクスチャ情報
-			lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sBump);
-			//テクスチャの数数
-			fileTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
-			
-			//テクスチャあり
-			if (fileTextureCount)
-			{
-				FbxFileTexture* textureInfo = lProperty.GetSrcObject<FbxFileTexture>(0);
-				const char* textureFilePath = textureInfo->GetRelativeFileName();
+		//テクスチャ情報
+		lProperty = pMaterial->FindProperty(FbxSurfaceMaterial::sBump);
+		//テクスチャの数数
+		fileTextureCount = lProperty.GetSrcObjectCount<FbxFileTexture>();
 
-				//ファイル名+拡張だけにする
-				char name[_MAX_FNAME];	//ファイル名
-				char ext[_MAX_EXT];	//拡張子
-				_splitpath_s(textureFilePath, nullptr, 0, nullptr, 0, name, _MAX_FNAME, ext, _MAX_EXT);
-				wsprintf(name, "%s%s", name, ext);
+		//テクスチャあり
+		if (fileTextureCount)
+		{
+			FbxFileTexture* textureInfo = lProperty.GetSrcObject<FbxFileTexture>(0);
+			const char* textureFilePath = textureInfo->GetRelativeFileName();
 
-				//ファイルからテクスチャ作成
-				pMaterialList_[i].pNormalTexture = new Texture;
-				HRESULT hr = pMaterialList_[i].pNormalTexture->Load(name);
-				assert(hr == S_OK);
-			}
-			//テクスチャ無し
-			else
-			{
-				pMaterialList_[i].pNormalTexture = nullptr;
-				//マテリアルの色
+			//ファイル名+拡張だけにする
+			char name[_MAX_FNAME];	//ファイル名
+			char ext[_MAX_EXT];	//拡張子
+			_splitpath_s(textureFilePath, nullptr, 0, nullptr, 0, name, _MAX_FNAME, ext, _MAX_EXT);
+			wsprintf(name, "%s%s", name, ext);
+
+			//ファイルからテクスチャ作成
+			pMaterialList_[i].pNormalTexture = new Texture;
+			HRESULT hr = pMaterialList_[i].pNormalTexture->Load(name);
+			assert(hr == S_OK);
+		}
+		//テクスチャ無し
+		else
+		{
+			pMaterialList_[i].pNormalTexture = nullptr;
+			//マテリアルの色
 		}
 	}
 }
@@ -372,8 +372,8 @@ void   Fbx::Draw(Transform& transform)
 			ID3D11ShaderResourceView* pSRV = pMaterialList_[i].pNormalTexture->GetSRV();
 			Direct3D::pContext_->PSSetShaderResources(1, 1, &pSRV);
 		}
-		ID3D11ShaderResourceView* pSRVToon = pToonTex_->GetSRV();
-		Direct3D::pContext_->PSSetShaderResources(1, 1, &pSRVToon);
+		/*ID3D11ShaderResourceView* pSRVToon = pToonTex_->GetSRV();
+		Direct3D::pContext_->PSSetShaderResources(1, 1, &pSRVToon);*/
 
 
 		Direct3D::pContext_->DrawIndexed(index_Count_[i], 0, 0);//polygonCount_ * 3

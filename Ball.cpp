@@ -28,7 +28,6 @@ void Ball::Update()
     {
         XMFLOAT4 p = pTest->GetLightPos();
         XMFLOAT4 margin{ p.x + 0.1f, p.y + 0.0f, p.z + 0.0f, p.w + 0.0f };
-        transform_.position_.x += 0.1f;
 
         //Model::GetModel(hModel_)->pTest->SetLightPos();(margin);
         pTest->SetLightPos(margin);
@@ -37,7 +36,6 @@ void Ball::Update()
     {
         XMFLOAT4 p = pTest->GetLightPos();
         XMFLOAT4 margin{ p.x - 0.1f, p.y - 0.0f, p.z - 0.0f, p.w - 0.0f };
-        transform_.position_.x -= 0.1f;
 
         /// Model::GetModel(hModel_)->pTest->SetLightPos();(margin);
         pTest->SetLightPos(margin);
@@ -46,7 +44,7 @@ void Ball::Update()
     {
         XMFLOAT4 p = pTest->GetLightPos();
         XMFLOAT4 margin{ p.x - 0.0f, p.y + 0.1f, p.z - 0.0f, p.w - 0.0f };
-        transform_.position_.y += 0.1f;
+
 
         //Model::GetModel(hModel_)->pTest->SetLightPos();(margin);
         pTest->SetLightPos(margin);
@@ -55,7 +53,7 @@ void Ball::Update()
     {
         XMFLOAT4 p = pTest->GetLightPos();
         XMFLOAT4 margin{ p.x - 0.0f, p.y - 0.1f, p.z - 0.0f, p.w - 0.0f };
-        transform_.position_.y -= 0.1f;
+
 
         //Model::GetModel(hModel_)->pTest->SetLightPos();(margin);
         pTest->SetLightPos(margin);
@@ -64,7 +62,7 @@ void Ball::Update()
     {
         XMFLOAT4 p = pTest->GetLightPos();
         XMFLOAT4 margin{ p.x - 0.0f, p.y - 0.0f, p.z + 0.1f, p.w + 0.0f };
-        transform_.position_.z += 0.1f;
+
 
         //Model::GetModel(hModel_)->pTest->SetLightPos();(margin);
         pTest->SetLightPos(margin);
@@ -73,11 +71,12 @@ void Ball::Update()
     {
         XMFLOAT4 p = pTest->GetLightPos();
         XMFLOAT4 margin{ p.x - 0.0f, p.y - 0.0f, p.z - 0.1f, p.w - 0.0f };
-        transform_.position_.z -= 0.1f;
+
 
         //Model::GetModel(hModel_)->pTest->SetLightPos();(margin);
         pTest->SetLightPos(margin);
     }
+    transform_.position_ = { pTest->GetLightPos().x, pTest->GetLightPos().y, pTest->GetLightPos().z};
 }
 
 //•`‰æ
