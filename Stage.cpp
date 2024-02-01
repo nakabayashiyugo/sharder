@@ -13,11 +13,7 @@ Stage::Stage(GameObject* parent)
 void Stage::Initialize()
 {
 	//モデルデータのロード
-<<<<<<< HEAD
-	hModel_ = Model::Load("Assets\\Water.fbx");
-=======
 	hModel_ = Model::Load("Assets\\Dice.fbx");
->>>>>>> f3d175686fe19dee4bef485f91701945ffd0f28d
 	assert(hModel_ >= 0);
 
 	//transform_.scale_ = XMFLOAT3(10, 1, 10);
@@ -29,7 +25,7 @@ void Stage::Initialize()
 //更新
 void Stage::Update()
 {
-	transform_.rotate_.y++;
+	transform_.rotate_.y += 1;
 }
 
 //描画

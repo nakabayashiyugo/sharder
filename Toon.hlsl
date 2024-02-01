@@ -90,8 +90,8 @@ float4 PS(VS_OUT inData) : SV_Target
 	float4 specular = float4(0, 0, 0, 0);
 	if (specularColor.a != 0)
 	{
-		specular = pow(saturate(dot(reflect, normalize(inData.eyev))), shininess);
+		specular = pow(saturate(dot(reflect, normalize(inData.eyev))), shininess)* specularColor;
 	}
 
-	return diffuse + ambient + specular;
+	return specular;
 }

@@ -144,7 +144,6 @@ HRESULT Direct3D::Initialize(int winW, int winH, HWND hWnd)
 
 	float blendFactor[4] = { D3D11_BLEND_ZERO, D3D11_BLEND_ZERO, D3D11_BLEND_ZERO, D3D11_BLEND_ZERO };
 	pContext_->OMSetBlendState(pBlendState, blendFactor, 0xffffffff);
-
 	//データを画面に描画するための一通りの設定（パイプライン）
 	pContext_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);  // データの入力種類を指定
 	pContext_->OMSetRenderTargets(1, &pRenderTargetView_, pDepthStencilView);            // 描画先を設定 nullptr
