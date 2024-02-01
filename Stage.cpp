@@ -13,7 +13,7 @@ Stage::Stage(GameObject* parent)
 void Stage::Initialize()
 {
 	//モデルデータのロード
-	hModel_ = Model::Load("Assets\\Ball.fbx");
+	hModel_ = Model::Load("Assets\\Water.fbx");
 	assert(hModel_ >= 0);
 
 	//transform_.scale_ = XMFLOAT3(10, 1, 10);
