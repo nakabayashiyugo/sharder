@@ -41,7 +41,7 @@ void TestScene::Initialize()
 {
 	Instantiate<Stage>(this);
 	Instantiate<Ball>(this);
-	Instantiate<Arrow>(this);
+	//Instantiate<Arrow>(this);
 
 	InitConstantBuffer();
 }

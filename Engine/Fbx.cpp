@@ -383,7 +383,7 @@ void   Fbx::Draw(Transform& transform)
 
 void Fbx::DrawOutLine(Transform& transform)
 {
-	Direct3D::SetShader(SHADER_OUTLINE);
+	Direct3D::SetShader(SHADER_NORMALMAP);
 	transform.Calclation();//トランスフォームを計算
 
 
@@ -447,8 +447,8 @@ void Fbx::DrawOutLine(Transform& transform)
 			ID3D11ShaderResourceView* pSRV = pMaterialList_[i].pNormalTexture->GetSRV();
 			Direct3D::pContext_->PSSetShaderResources(2, 1, &pSRV);
 		}
-		ID3D11ShaderResourceView* pSRVToon = pToonTex_->GetSRV();
-		Direct3D::pContext_->PSSetShaderResources(1, 1, &pSRVToon);
+		//ID3D11ShaderResourceView* pSRVToon = pToonTex_->GetSRV();
+		//Direct3D::pContext_->PSSetShaderResources(1, 1, &pSRVToon);
 
 
 		Direct3D::pContext_->DrawIndexed(index_Count_[i], 0, 0);//polygonCount_ * 3
