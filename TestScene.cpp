@@ -8,7 +8,7 @@
 #include "Arrow.h"
 
 namespace {
-	const XMFLOAT4 DEF_LIGHT_POSITION{ 0, 1, -1, 0 };
+	const XMFLOAT4 DEF_LIGHT_POSITION{ 0, 1, 5, 0 };
 }
 
 void TestScene::InitConstantBuffer()
